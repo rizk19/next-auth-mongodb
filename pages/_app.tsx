@@ -4,7 +4,8 @@ import "@styles/app.scss";
 import "@styles/global.scss";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Hydrate } from "react-query/hydration";
-import { Provider } from "react-redux";
+import { Provider as ReduxProvider } from "react-redux";
+import { Provider as AuthProvider } from "next-auth/client";
 import store from "@redux/store";
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
@@ -12,9 +13,11 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
     return (
         <QueryClientProvider client={queryClient}>
             <Hydrate state={pageProps.dehydratedState}>
-                <Provider store={store}>
-                    <Component {...pageProps} />
-                </Provider>
+                <AuthProvider session={pageProps.session}>
+                    <ReduxProvider store={store}>
+                        <Component {...pageProps} />
+                    </ReduxProvider>
+                </AuthProvider>
             </Hydrate>
         </QueryClientProvider>
     );
