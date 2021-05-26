@@ -107,17 +107,23 @@ export default NextAuth({
     // when an action is performed.
     // https://next-auth.js.org/configuration/callbacks
     callbacks: {
-        async signIn(user, account, profile) {
-            console.log("callbacksignin2", user);
-            console.log("callbackaccount", account);
-            console.log("callback profile", profile);
+        async signIn(user, account, profile, token) {
+            if (user) {
+                user.provider = account.provider;
+            }
             return true;
         },
         // async redirect(url, baseUrl) { return baseUrl },
-        // async session(session, user) { return session },
-        async jwt(token, user, account, profile, isNewUser) {
-            console.log("callbackjwt", token);
+        async jwt(token) {
             return token;
+        },
+        async session(session, token) {
+            if (token) {
+                session.user["id"] = token.sub;
+            }
+            // Add property to session, like an access_token from a provider.
+            // session.accessToken = token.accessToken
+            return session;
         },
     },
 

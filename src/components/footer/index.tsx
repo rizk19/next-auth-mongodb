@@ -8,17 +8,13 @@ export const Footer: React.FC = () => {
             style={{ backgroundColor: "#282c34" }}
         >
             <a
-                href="https://github.com/pankod"
+                href="https://github.com/rizk19"
                 target="_blank"
-                className="d-block mb-3"
-                data-testid="pankod-logo"
+                className="d-block mb-3 footer-brand"
+                data-testid="ekihelp-logo"
             >
-                <Image
-                    src="/icons/pankod-icon.svg"
-                    alt="pankod"
-                    width="140"
-                    height="28"
-                />
+                <span style={{ color: "lightgrey" }}>eki</span>
+                <strong>help</strong>
             </a>
 
             <ul
@@ -26,28 +22,24 @@ export const Footer: React.FC = () => {
                 data-testid="icons-container"
             >
                 <li className="mx-2">
-                    <Image
-                        src="/icons/github-icon.svg"
-                        alt="github"
-                        width="28"
-                        height="29"
-                    />
+                    <a href="https://github.com/rizk19">
+                        <Image
+                            src="/icons/github-icon.svg"
+                            alt="github"
+                            width="28"
+                            height="29"
+                        />
+                    </a>
                 </li>
                 <li className="mx-2">
-                    <Image
-                        src="/icons/twitter-icon.svg"
-                        alt="twitter"
-                        width="28"
-                        height="28"
-                    />
-                </li>
-                <li className="mx-2">
-                    <Image
-                        src="/icons/youtube-icon.svg"
-                        alt="youtube"
-                        width="28"
-                        height="29"
-                    />
+                    <a href="https://twitter.com/eightkiw">
+                        <Image
+                            src="/icons/twitter-icon.svg"
+                            alt="twitter"
+                            width="28"
+                            height="28"
+                        />
+                    </a>
                 </li>
                 <li className="mx-2">
                     <Image

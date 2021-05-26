@@ -1,6 +1,8 @@
 {
     "name": "ekihelp",
     "version": "0.1.0",
+    "description": "A React Nextjs project to helping my wife",
+    "author": "https://github.com/rizk19",
     "private": true,
     "scripts": {
         "dev": "next dev",

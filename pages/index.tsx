@@ -1,16 +1,13 @@
 import React from "react";
 import { getSession, GetSessionOptions } from "next-auth/client";
-
-import { Header, Main, Footer, Cards } from "@components";
+import { Main, Cards, Layout } from "@components";
 
 const Home: React.FC = () => {
     return (
-        <div className="d-flex flex-column min-vh-100">
-            <Header />
+        <Layout>
             <Main />
             <Cards />
-            <Footer />
-        </div>
+        </Layout>
     );
 };
 
