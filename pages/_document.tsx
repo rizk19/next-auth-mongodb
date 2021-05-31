@@ -1,6 +1,6 @@
 import Document, { DocumentContext, DocumentInitialProps } from "next/document";
 
-class CustomDocument extends Document {
+export default class CustomDocument extends Document {
     static async getInitialProps(
         ctx: DocumentContext,
     ): Promise<DocumentInitialProps> {
@@ -9,5 +9,3 @@ class CustomDocument extends Document {
         return initialProps;
     }
 }
-
-export default CustomDocument;

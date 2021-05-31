@@ -15,6 +15,7 @@
         "jsx": "preserve",
         "baseUrl": ".",
         "paths": {
+            "@src/*": ["src/*"],
             "@components/*": ["src/components/*"],
             "@components": ["src/components"],
             "@styles/*": ["src/styles/*"],
@@ -27,6 +28,6 @@
             "@test": ["test"]
         }
     },
-    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/api/auth/[...nextauth].js"],
+    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/api/auth/[...nextauth].js", "**/*.jsx"],
     "exclude": ["node_modules", "test/*"]
 }
