@@ -5,3 +5,4 @@ export { Button } from "./button";
 export { Cards } from "./cards";
 export { Footer } from "./footer";
 export { Layout } from "./layout";
+export { Toast } from "./toast";

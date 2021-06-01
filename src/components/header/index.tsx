@@ -7,7 +7,12 @@ import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 export const Header: React.FC = () => {
     const [session] = useSession();
     const router = useRouter();
-    const usersession = session && session.user ? session.user.name : "";
+    const usersession =
+        session && session.user
+            ? session.user.name
+            : session && session.user && session.user.email
+            ? session.user.email
+            : "Welcome";
 
     return (
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">

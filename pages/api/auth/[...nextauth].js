@@ -16,34 +16,14 @@ export default NextAuth({
             // The credentials is used to generate a suitable form on the sign in page.
             // You can specify whatever fields you are expecting to be submitted.
             // e.g. domain, username, password, 2FA token, etc.
-            credentials: {
-                email: {
-                    label: "email",
-                    type: "email",
-                    placeholder: "Email",
-                },
-                password: {
-                    label: "Password",
-                    type: "password",
-                    placeholder: "Password",
-                },
-            },
             async authorize(credentials, req) {
                 try {
-                    console.log("cred", credentials);
+                    console.log("cred", credentials.email);
                     const user = await axios.post(
-                        `${process.env.NEXTAUTH_URL}/api/login`,
+                        `${process.env.NEXTAUTH_URL}/api/signin`,
                         {
-                            user: {
-                                password: credentials.password,
-                                email: credentials.email,
-                            },
-                        },
-                        {
-                            headers: {
-                                accept: "*/*",
-                                "Content-Type": "application/json",
-                            },
+                            password: credentials.password,
+                            email: credentials.email,
                         },
                     );
                     // console.log("userr", user);
@@ -60,10 +40,13 @@ export default NextAuth({
                     // You can also use the request object to obtain additional parameters
                     // (i.e., the request IP address)
 
-                    // console.log(user(), "out");
-                    if (user) {
+                    console.log("out1");
+                    console.log("out2", user && user.data);
+                    console.log("out3", user.data);
+                    if (user && user.data && user.data.email) {
+                        console.log("masuk");
                         // Any user object returned here will be saved in the JSON Web Token
-                        return user;
+                        return user.data;
                     } else {
                         return null;
                     }
@@ -122,7 +105,7 @@ export default NextAuth({
     // pages is not specified for that route.
     // https://next-auth.js.org/configuration/pages
     pages: {
-        //signIn: "/signin", // Displays signin buttons
+        signIn: "/signin", // Displays signin buttons
         // signOut: '/auth/signout', // Displays form with sign out button
         // error: '/auth/error', // Error code passed in query string as ?error=
         // verifyRequest: '/auth/verify-request', // Used for check email page

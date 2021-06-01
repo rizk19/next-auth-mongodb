@@ -1,22 +1,56 @@
 import React, { useState } from "react";
 import { useSession, signIn } from "next-auth/client";
-import { Layout } from "@components";
+import { Layout, Toast } from "@components";
 import { Container, Row, Card, Button, Form, Col } from "react-bootstrap";
 import { Formik } from "formik";
 import Image from "next/image";
 import axios from "axios";
+import URL from "@config";
+import bcrypt from "bcryptjs";
 
-const Signin = ({ data }) => {
+const Signin = () => {
     const [session] = useSession();
     const [typePass, setTypePass] = useState(false);
     const handlePassword = () => {
         setTypePass(!typePass);
     };
     console.log("signin session", session);
-    const passSubmit = (params) => {
-        const data = { ...params, callbackURL: process.env.NEXTAUTH_URL };
-        signIn("credentials", params);
-        console.log(data);
+    const passSubmit = async (params) => {
+        console.log("params", params.password);
+        const hashPassword = bcrypt.hashSync(params.password, 10);
+        console.log("hashPassword", hashPassword);
+        const reverse = params.password.split("").reverse().join("");
+        console.log("reverse", reverse);
+        const resultHash = bcrypt.compareSync(params.password, hashPassword); // true
+        console.log("resultHash", resultHash);
+        // const data = { ...params, callbackUrl: `${window.location.origin}` };
+        // signIn("credentials", params);
+        await axios
+            .post(URL.signin_api, {
+                password: params.password,
+                email: params.email,
+            })
+            .then((res) => {
+                Toast.fire({
+                    icon: "success",
+                    title: `Signin Success`,
+                });
+                console.log("res", res);
+            })
+            .catch((err) => {
+                if (err.response && err.response.data) {
+                    Toast.fire({
+                        icon: `${err.response.data.status}`,
+                        title: `${err.response.data.message}`,
+                    });
+                } else {
+                    Toast.fire({
+                        icon: `error`,
+                        title: `Something wrong, please try again`,
+                    });
+                }
+            });
+        // console.log("data", data);
     };
 
     return (
@@ -207,13 +241,13 @@ const Signin = ({ data }) => {
     );
 };
 
-Signin.getInitialProps = async () => {
-    const res = await axios
-        .get("http://localhost:3000/api/signin")
-        .then((res) => res)
-        .catch((err) => err);
-    console.log("resres", res.data);
-    return { data: res.data };
-};
+// Signin.getInitialProps = async () => {
+//     const res = await axios
+//         .get("http://localhost:3000/api/signin")
+//         .then((res) => res)
+//         .catch((err) => err);
+//     console.log("resres", res.data);
+//     return { data: res.data };
+// };
 
 export default Signin;
