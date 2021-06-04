@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useSession, signIn } from "next-auth/client";
+import Link from "next/link";
 import { Layout, Toast } from "@components";
 import { Container, Row, Card, Button, Form, Col } from "react-bootstrap";
 import { Formik } from "formik";
@@ -55,12 +56,12 @@ const Signin = () => {
 
     return (
         <Layout>
-            <Container className="my-3 flex-grow-1">
+            <Container className="my-3 flex-grow-1 svg-dot-background">
                 <Row className="min-vh-70 my-2 py-3 centering">
                     <Card>
                         {/* <Card.Header>Featured</Card.Header> */}
                         <Card.Body
-                            style={{ width: "550px" }}
+                            style={{ width: "30em" }}
                             className="text-center"
                         >
                             <Card.Title>Sign in</Card.Title>
@@ -168,7 +169,11 @@ const Signin = () => {
                                                     </Form.Control.Feedback>
                                                 </Form.Group>
                                                 <Form.Group as={Col} md="12">
-                                                    <div>
+                                                    <div
+                                                        style={{
+                                                            textAlign: "start",
+                                                        }}
+                                                    >
                                                         <input
                                                             type="checkbox"
                                                             id="showpasswordcheckbox"
@@ -177,7 +182,13 @@ const Signin = () => {
                                                                 handlePassword()
                                                             }
                                                         />
-                                                        <label htmlFor="showpasswordcheckbox">
+                                                        <label
+                                                            htmlFor="showpasswordcheckbox"
+                                                            style={{
+                                                                fontSize:
+                                                                    "13px",
+                                                            }}
+                                                        >
                                                             Show Password
                                                         </label>
                                                     </div>
@@ -208,8 +219,39 @@ const Signin = () => {
                                     lineHeight: "3rem",
                                 }}
                             >
-                                or
+                                <Row
+                                    style={{
+                                        justifyContent: "flex-end",
+                                        fontSize: "13px",
+                                        paddingRight: "1rem",
+                                    }}
+                                >
+                                    Don't have an account yet?&nbsp;
+                                    <Link href="/signup"> Register now </Link>
+                                </Row>
                             </Card.Text>
+                        </Card.Body>
+                        {/* <Card.Footer className="text-muted text-right">
+                            <Button variant="primary">Go somewhere</Button>
+                        </Card.Footer> */}
+                    </Card>
+                </Row>
+                <Row className="min-vh-30 centering">
+                    <Card>
+                        <Card.Text
+                            style={{
+                                paddingTop: "1em",
+                                marginBottom: "0rem",
+                            }}
+                        >
+                            <Row style={{ justifyContent: "center" }}>
+                                Sign in with
+                            </Row>
+                        </Card.Text>
+                        <Card.Body
+                            style={{ width: "30em" }}
+                            className="text-center"
+                        >
                             <Button
                                 className="w-100"
                                 variant="light"
@@ -227,13 +269,10 @@ const Signin = () => {
                                         marginLeft: "1rem",
                                     }}
                                 >
-                                    Sign in with Google
+                                    Google
                                 </span>
                             </Button>
                         </Card.Body>
-                        {/* <Card.Footer className="text-muted text-right">
-                            <Button variant="primary">Go somewhere</Button>
-                        </Card.Footer> */}
                     </Card>
                 </Row>
             </Container>
