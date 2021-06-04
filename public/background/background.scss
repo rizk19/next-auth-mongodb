@@ -1,0 +1,8 @@
+.svg-dot-background {
+  background: url("./dot.svg") center bottom no-repeat;
+  width: 100% !important;
+  height: 100% !important;
+  background-size: cover;
+  position: fixed !important;
+  z-index: 500;
+}
