@@ -1,40 +1,33 @@
-import React, { useState } from "react";
-import { useSession, signIn } from "next-auth/client";
-import Link from "next/link";
+import React from "react";
+import { useRouter } from "next/router";
 import { Layout, Toast } from "@components";
 import { Container, Row, Card, Button, Form, Col } from "react-bootstrap";
 import { Formik } from "formik";
-import Image from "next/image";
 import axios from "axios";
 import URL from "@config";
 import bcrypt from "bcryptjs";
 
-const Signin = () => {
-    const [session] = useSession();
-    const [typePass, setTypePass] = useState(false);
-    const handlePassword = () => {
-        setTypePass(!typePass);
-    };
-    console.log("signin session", session);
+const Signup = () => {
+    const router = useRouter();
     const passSubmit = async (params) => {
-        const data = { ...params, callbackUrl: `${window.location.origin}` };
-        // signIn("credentials", params);
+        const hashPassword = bcrypt.hashSync(params.password, 10);
+        const dataPost = {
+            name: params.name,
+            email: params.email,
+            password: hashPassword,
+        };
         await axios
-            .post(URL.signin_api, {
-                password: params.password,
-                email: params.email,
-            })
+            .post(URL.signup_api, dataPost)
             .then((res) => {
                 Toast.fire({
                     icon: "success",
-                    title: `Signin Success`,
+                    title: `Signup Success`,
                 });
-                if (res.data) {
+                if (res.data.status) {
                     setTimeout(() => {
-                        signIn("credentials", data);
-                    }, 300);
+                        router.push("/signin");
+                    }, 1000);
                 }
-                console.log("res", res);
             })
             .catch((err) => {
                 if (err.response && err.response.data) {
@@ -49,7 +42,6 @@ const Signin = () => {
                     });
                 }
             });
-        // console.log("data", data);
     };
 
     return (
@@ -62,20 +54,37 @@ const Signin = () => {
                             style={{ width: "30em" }}
                             className="text-center"
                         >
-                            <Card.Title>Sign in</Card.Title>
+                            <Card.Title>Sign up</Card.Title>
                             <Formik
-                                initialValues={{ email: "", password: "" }}
+                                initialValues={{
+                                    email: "",
+                                    name: "",
+                                    password: "",
+                                    confirmPassword: "",
+                                }}
                                 validate={(values) => {
-                                    const errors = { email: "", password: "" };
+                                    const errors = {
+                                        email: "",
+                                        password: "",
+                                        confirmPassword: "",
+                                    };
                                     const touched = {
                                         email: false,
+                                        name: false,
                                         password: false,
+                                        confirmPassword: false,
                                     };
                                     if (values.email.length > 0) {
                                         touched.email = true;
                                     }
+                                    if (values.name.length > 0) {
+                                        touched.name = true;
+                                    }
                                     if (values.password.length > 0) {
                                         touched.password = true;
+                                    }
+                                    if (values.confirmPassword.length > 0) {
+                                        touched.confirmPassword = true;
                                     }
                                     if (!values.password && touched.password) {
                                         errors.password = "Required";
@@ -85,6 +94,19 @@ const Signin = () => {
                                     ) {
                                         errors.password =
                                             "Password must more than 6(six) word";
+                                    }
+                                    if (
+                                        !values.confirmPassword &&
+                                        touched.confirmPassword
+                                    ) {
+                                        errors.confirmPassword = "Required";
+                                    } else if (
+                                        values.password !==
+                                            values.confirmPassword &&
+                                        touched.confirmPassword
+                                    ) {
+                                        errors.confirmPassword =
+                                            "Password not match!";
                                     }
                                     if (!values.email && touched.email) {
                                         errors.email = "Required";
@@ -98,28 +120,19 @@ const Signin = () => {
                                     }
                                     return errors;
                                 }}
-                                onSubmit={(values, { setSubmitting }) => {
-                                    console.log("values", values);
-
-                                    // setTimeout(() => {
-                                    alert(JSON.stringify(values, null, 2));
-                                    setSubmitting(false);
-                                    // }, 400);
-                                }}
                             >
                                 {({
                                     handleSubmit,
                                     handleChange,
                                     values,
                                     errors,
-                                    isSubmitting,
                                 }) => {
                                     return (
                                         <Form
                                             noValidate
                                             onSubmit={handleSubmit}
                                         >
-                                            <Row className="mt-2">
+                                            <Row className="mt-4">
                                                 <Form.Group
                                                     as={Col}
                                                     md="12"
@@ -146,18 +159,29 @@ const Signin = () => {
                                                     </Form.Control.Feedback>
                                                 </Form.Group>
                                             </Row>
-                                            <Row className="mb-2">
+                                            <Row>
+                                                <Form.Group
+                                                    as={Col}
+                                                    md="12"
+                                                    controlId="name"
+                                                >
+                                                    <Form.Control
+                                                        type="text"
+                                                        name="name"
+                                                        value={values.name}
+                                                        placeholder="Your Name"
+                                                        onChange={handleChange}
+                                                    />
+                                                </Form.Group>
+                                            </Row>
+                                            <Row>
                                                 <Form.Group
                                                     as={Col}
                                                     md="12"
                                                     controlId="password"
                                                 >
                                                     <Form.Control
-                                                        type={
-                                                            typePass
-                                                                ? "text"
-                                                                : "password"
-                                                        }
+                                                        type="password"
                                                         name="password"
                                                         value={values.password}
                                                         placeholder="Password"
@@ -176,30 +200,34 @@ const Signin = () => {
                                                         {errors.password}
                                                     </Form.Control.Feedback>
                                                 </Form.Group>
-                                                <Form.Group as={Col} md="12">
-                                                    <div
-                                                        style={{
-                                                            textAlign: "start",
-                                                        }}
-                                                    >
-                                                        <input
-                                                            type="checkbox"
-                                                            id="showpasswordcheckbox"
-                                                            checked={typePass}
-                                                            onChange={() =>
-                                                                handlePassword()
-                                                            }
-                                                        />
-                                                        <label
-                                                            htmlFor="showpasswordcheckbox"
-                                                            style={{
-                                                                fontSize:
-                                                                    "13px",
-                                                            }}
-                                                        >
-                                                            Show Password
-                                                        </label>
-                                                    </div>
+                                            </Row>
+                                            <Row className="mb-2">
+                                                <Form.Group
+                                                    as={Col}
+                                                    md="12"
+                                                    controlId="confirmPassword"
+                                                >
+                                                    <Form.Control
+                                                        type="password"
+                                                        name="confirmPassword"
+                                                        value={
+                                                            values.confirmPassword
+                                                        }
+                                                        placeholder="Confirm Password"
+                                                        onChange={handleChange}
+                                                        isValid={
+                                                            !errors.confirmPassword &&
+                                                            values.confirmPassword
+                                                                ? true
+                                                                : false
+                                                        }
+                                                        isInvalid={
+                                                            !!errors.confirmPassword
+                                                        }
+                                                    />
+                                                    <Form.Control.Feedback type="invalid">
+                                                        {errors.confirmPassword}
+                                                    </Form.Control.Feedback>
                                                 </Form.Group>
                                             </Row>
                                             <Button
@@ -209,67 +237,20 @@ const Signin = () => {
                                                     !!errors.email ||
                                                     !!errors.password ||
                                                     values.email === "" ||
-                                                    values.password === ""
+                                                    values.password === "" ||
+                                                    values.confirmPassword ===
+                                                        ""
                                                 }
                                                 onClick={() =>
                                                     passSubmit(values)
                                                 }
                                             >
-                                                Sign in with email
+                                                Sign up
                                             </Button>
                                         </Form>
                                     );
                                 }}
                             </Formik>
-                            <Row
-                                style={{
-                                    lineHeight: "2rem",
-                                    justifyContent: "flex-end",
-                                    fontSize: "13px",
-                                    paddingRight: "1rem",
-                                }}
-                            >
-                                Don't have an account yet?&nbsp;
-                                <Link href="/signup"> Register now </Link>
-                            </Row>
-                        </Card.Body>
-                        {/* <Card.Footer className="text-muted text-right">
-                            <Button variant="primary">Go somewhere</Button>
-                        </Card.Footer> */}
-                    </Card>
-                </Row>
-                <Row className="min-vh-30 centering">
-                    <Card style={{ width: "30.3em", paddingBottom: "0.5em" }}>
-                        <Card.Text
-                            style={{
-                                paddingTop: "1em",
-                                marginBottom: "0rem",
-                                textAlign: "center",
-                            }}
-                        >
-                            Sign in with
-                        </Card.Text>
-                        <Card.Body className="text-center">
-                            <Button
-                                style={{ width: "100%" }}
-                                variant="light"
-                                onClick={() => signIn("google")}
-                            >
-                                <Image
-                                    src="/icons/google-icon.svg"
-                                    alt="github"
-                                    width="28"
-                                    height="29"
-                                />
-                                <span
-                                    style={{
-                                        verticalAlign: "super",
-                                        marginLeft: "1rem",
-                                    }}
-                                >
-                                    Google
-                                </span>
-                            </Button>
                         </Card.Body>
                     </Card>
                 </Row>
@@ -278,13 +259,13 @@ const Signin = () => {
     );
 };
 
-// Signin.getInitialProps = async () => {
+// Signup.getInitialProps = async () => {
 //     const res = await axios
-//         .get("http://localhost:3000/api/signin")
+//         .get("http://localhost:3000/api/signup")
 //         .then((res) => res)
 //         .catch((err) => err);
 //     console.log("resres", res.data);
 //     return { data: res.data };
 // };
 
-export default Signin;
+export default Signup;

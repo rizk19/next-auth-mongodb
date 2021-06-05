@@ -4,10 +4,10 @@ import bcrypt from "bcryptjs";
 
 const handler = createHandler();
 
-handler.get(async (req, res) => {
-    const users = await Users.find({}).exec();
-    res.status(200).json(users);
-});
+// handler.get(async (req, res) => {
+//     const users = await Users.find({}).exec();
+//     res.status(200).json(users);
+// });
 
 handler.post(async (req, res) => {
     let data = req.body;
@@ -15,16 +15,11 @@ handler.post(async (req, res) => {
         email: data.email,
     }).exec();
     let verify = true;
+    console.log("user", user);
     if (user) {
-        const hasPassword = Object.prototype.hasOwnProperty.call(
-            user,
-            "password",
-        );
-        if (hasPassword && user.data.password) {
-            const resultHash = bcrypt.compareSync(
-                data.password,
-                user.data.password,
-            ); // true
+        if (data.password && user.password) {
+            const resultHash = bcrypt.compareSync(data.password, user.password); // true
+            console.log("compare", data.password, resultHash);
             if (!resultHash) {
                 verify = false;
             }

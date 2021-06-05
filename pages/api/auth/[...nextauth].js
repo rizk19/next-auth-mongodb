@@ -9,6 +9,21 @@ export default NextAuth({
         Providers.Google({
             clientId: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+            profileUrl:
+                "https://www.googleapis.com/oauth2/v1/userinfo?alt=json",
+            async profile(profile) {
+                const getId = await axios.get(
+                    URL.users_api + `?id=${profile.id}`,
+                );
+                console.log("guug;e getId", getId);
+                console.log("guug;e", profile);
+                return {
+                    id: profile.id,
+                    name: profile.name,
+                    email: profile.email,
+                    image: profile.picture,
+                };
+            },
         }),
         Providers.Credentials({
             // The name to display on the sign in form (e.g. 'Sign in with...')
@@ -40,9 +55,6 @@ export default NextAuth({
                     // You can also use the request object to obtain additional parameters
                     // (i.e., the request IP address)
 
-                    console.log("out1");
-                    console.log("out2", user && user.data);
-                    console.log("out3", user.data);
                     if (user && user.data && user.data.email) {
                         console.log("masuk");
                         // Any user object returned here will be saved in the JSON Web Token
@@ -117,22 +129,40 @@ export default NextAuth({
     // https://next-auth.js.org/configuration/callbacks
     callbacks: {
         async signIn(user, account, profile, token) {
+            console.log(user, account, profile, token);
             if (user) {
                 user.provider = account.provider;
             }
             return true;
         },
         // async redirect(url, baseUrl) { return baseUrl },
-        async jwt(token, user, profile) {
+        async jwt(token, user) {
             console.log("jwt", token);
+            if (user) {
+                if (user.company) {
+                    token["company"] = user["company"];
+                }
+                if (user._id) {
+                    token["_id"] = user["_id"];
+                }
+            }
             console.log("jwt user", user);
-            console.log("jwt profile", profile);
             return token;
         },
         async session(session, token) {
             if (token) {
-                session.user["id"] = token.sub;
+                if (token.sub) {
+                    session.user["_id"] = token.sub;
+                }
+                if (token._id) {
+                    session.user["_id"] = token._id;
+                }
+                if (token.company) {
+                    session.user["company"] = token.company;
+                }
             }
+            console.log("session", session);
+            console.log("session token", token);
             // Add property to session, like an access_token from a provider.
             // session.accessToken = token.accessToken
             return session;
