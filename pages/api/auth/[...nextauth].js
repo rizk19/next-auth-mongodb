@@ -9,21 +9,6 @@ export default NextAuth({
         Providers.Google({
             clientId: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            profileUrl:
-                "https://www.googleapis.com/oauth2/v1/userinfo?alt=json",
-            async profile(profile) {
-                const getId = await axios.get(
-                    URL.users_api + `?id=${profile.id}`,
-                );
-                console.log("guug;e getId", getId);
-                console.log("guug;e", profile);
-                return {
-                    id: profile.id,
-                    name: profile.name,
-                    email: profile.email,
-                    image: profile.picture,
-                };
-            },
         }),
         Providers.Credentials({
             // The name to display on the sign in form (e.g. 'Sign in with...')

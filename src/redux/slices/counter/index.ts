@@ -5,7 +5,7 @@ interface ICounter {
 }
 
 const initialState: ICounter = {
-    count: 20,
+    count: 12,
 };
 
 const counterSlice = createSlice({

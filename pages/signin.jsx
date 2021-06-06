@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useSession, signIn } from "next-auth/client";
+import { signIn } from "next-auth/client";
 import Link from "next/link";
 import { Layout, Toast } from "@components";
 import { Container, Row, Card, Button, Form, Col } from "react-bootstrap";
@@ -7,15 +7,12 @@ import { Formik } from "formik";
 import Image from "next/image";
 import axios from "axios";
 import URL from "@config";
-import bcrypt from "bcryptjs";
 
 const Signin = () => {
-    const [session] = useSession();
     const [typePass, setTypePass] = useState(false);
     const handlePassword = () => {
         setTypePass(!typePass);
     };
-    console.log("signin session", session);
     const passSubmit = async (params) => {
         const data = { ...params, callbackUrl: `${window.location.origin}` };
         // signIn("credentials", params);
@@ -253,7 +250,11 @@ const Signin = () => {
                             <Button
                                 style={{ width: "100%" }}
                                 variant="light"
-                                onClick={() => signIn("google")}
+                                onClick={() =>
+                                    signIn("google", {
+                                        callbackUrl: `${window.location.origin}`,
+                                    })
+                                }
                             >
                                 <Image
                                     src="/icons/google-icon.svg"
