@@ -1,5 +1,5 @@
-const baseurl = "http://localhost:3000";
-const baseapi = "http://localhost:3000/api";
+const baseurl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+const baseapi = process.env.NEXTAUTH_URL || "http://localhost:3000/api";
 
 export default {
     users_api: `${baseapi}/users`,

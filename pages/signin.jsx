@@ -279,13 +279,4 @@ const Signin = () => {
     );
 };
 
-// Signin.getInitialProps = async () => {
-//     const res = await axios
-//         .get("http://localhost:3000/api/signin")
-//         .then((res) => res)
-//         .catch((err) => err);
-//     console.log("resres", res.data);
-//     return { data: res.data };
-// };
-
 export default Signin;
