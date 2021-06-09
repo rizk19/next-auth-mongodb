@@ -5,35 +5,37 @@ import URL from "@config";
 interface IUserManagement {
     count: number;
     users: Array<string>;
+    user: Record<string, never>;
 }
 
 const initialState: IUserManagement = {
     count: 88,
     users: [],
+    user: {},
 };
 
 const userManagementSlice = createSlice({
     name: "userManagement",
     initialState,
     reducers: {
-        increment: (state) => {
-            state.count++;
-        },
-        decrement: (state) => {
-            state.count--;
-        },
         setUsers: (state, action) => {
             state.users = action.payload;
+        },
+        setUser: (state, action) => {
+            state.user = action.payload;
         },
     },
 });
 
-export const { increment, decrement, setUsers } = userManagementSlice.actions;
+export const { setUsers, setUser } = userManagementSlice.actions;
 
-export const getUsersRedux = (data) => async (dispatch) => {
-    await axios.get(URL.users_api + `/${data._id}?coba=ah`).then((res) => {
-        console.log("rrrr", res.data);
-        dispatch(setUsers(res.data));
+export const selectUser = (state) => state.userManagement.user;
+
+export const getUserRedux = (data) => async (dispatch) => {
+    await axios.get(URL.users_api + `/${data._id}`).then((res) => {
+        if (res) {
+            dispatch(setUser(res.data));
+        }
     });
     // dispatch(setUsers(value));
 };

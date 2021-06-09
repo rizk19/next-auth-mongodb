@@ -4,14 +4,14 @@ import Users from "@src/models/users";
 const handler = createHandler();
 
 handler.get(async (req, res) => {
-    const { params, coba } = req.query;
-    console.log("cobacoba", coba);
-    console.log("params", params);
-    let body = req.body;
-    let paramsP = req.params;
-    console.log("bodypack", body);
-    console.log("paramsixpack", paramsP);
-    const users = await Users.findOne({ _id: params[0] }).exec();
+    const { params } = req.query;
+    const users = await Users.findOne(
+        { _id: params[0] },
+        "_id email name company image",
+    )
+        .populate("company")
+        .exec();
+    console.log(users.populated("company"));
     res.status(200).json(users);
 });
 

@@ -1,24 +1,19 @@
 import React from "react";
 import { useSelector } from "react-redux";
 
-import { increase, decrease, increment, decrement } from "@redux/actions";
+import { increase, decrease } from "@redux/actions";
 import { RootState } from "@redux/reducers";
 import { useAppDispatch } from "@redux/store";
 
 export const Counter = () => {
     const dispatch = useAppDispatch();
     const count = useSelector((state: RootState) => state.counter.count);
-    const count2 = useSelector(
-        (state: RootState) => state.userManagement.count,
-    );
 
     const add = () => {
         dispatch(increase());
-        dispatch(increment());
     };
     const min = () => {
         dispatch(decrease());
-        dispatch(decrement());
     };
 
     return (
@@ -28,9 +23,7 @@ export const Counter = () => {
                 <button type="button" onClick={() => add()}>
                     +
                 </button>
-                <span>
-                    {count}&{count2}
-                </span>
+                <span>{count}</span>
                 <button type="button" onClick={() => min()}>
                     -
                 </button>

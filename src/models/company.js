@@ -1,21 +1,17 @@
 import mongoose, { Schema } from "mongoose";
 
-const MODEL_NAME = "Users";
+const MODEL_NAME = "Company";
 
 const schema = new Schema({
-    name: {
-        type: String,
-    },
-    email: {
+    company_name: {
         type: String,
         required: true,
         unique: true,
     },
-    password: {
+    company_email: {
         type: String,
-        required: true,
     },
-    company: [{ type: mongoose.Schema.Types.ObjectId, ref: "Company" }],
+    // employee: [{ type: mongoose.Schema.Types.ObjectId, ref: "Employee" }],
     createdAt: {
         type: Date,
     },
@@ -23,10 +19,7 @@ const schema = new Schema({
         type: Date,
         required: true,
     },
-    image: {
-        type: String,
-    },
 });
 
 export default mongoose.models[MODEL_NAME] ||
-    mongoose.model(MODEL_NAME, schema, "users");
+    mongoose.model(MODEL_NAME, schema, "company");
