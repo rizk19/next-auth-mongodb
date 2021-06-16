@@ -1,13 +1,22 @@
 import React from "react";
+import Head from "next/head";
 import { getSession, GetSessionOptions } from "next-auth/client";
 import { Main, Cards, Layout } from "@components";
 
 const Home: React.FC = () => {
     return (
-        <Layout>
-            <Main />
-            <Cards />
-        </Layout>
+        <>
+            <Head>
+                <link
+                    rel="stylesheet"
+                    href="https://unpkg.com/boxicons@latest/css/boxicons.min.css"
+                ></link>
+            </Head>
+            <Layout>
+                <Main />
+                <Cards />
+            </Layout>
+        </>
     );
 };
 

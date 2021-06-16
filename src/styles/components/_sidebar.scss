@@ -1,0 +1,151 @@
+.custom_sidebar {
+  height: 100%;
+  width: $sidebar-width;
+  background: #11101d;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 6px 14px;
+  z-index: 98;
+}
+
+.custom_sidebar .sidebar_logo_content .sidebar_logo{
+  color: #fff;
+  display: flex;
+  height: 50px;
+  width: 100%;
+  align-items: center;
+}
+
+.sidebar_logo_content .sidebar_logo i {
+  font-size: 28px;
+  margin-right: 5px;
+}
+
+.sidebar_logo_content .sidebar_logo .sidebar_logo_name {
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.custom_sidebar i#sidebar_button {
+  position: absolute;
+  left: 90%;
+  top: 0;
+  color: #fff;
+  font-size: 20px;
+  height: 50px;
+  width: 50px;
+  text-align: center;
+  line-height: 50px;
+  transform: translateX(-50%);
+}
+
+.custom_sidebar ul {
+  padding: 0;
+  margin-top: 20px;
+}
+
+.custom_sidebar ul li {
+  width: 100%;
+  height: 50px;
+  position: relative;
+  margin: 0 5px;
+} 
+
+.custom_sidebar ul li input {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+  border-radius: 12px;
+  outline: none;
+  border: none;
+  background: #1d1b31;
+  padding-left: 50px;
+  font-size: 18px;
+  color: #fff;
+}
+
+.custom_sidebar ul li .bx-search-alt {
+  position: absolute;
+  z-index: 99;
+  color: #fff;
+  font-size: 22px;
+}
+
+.custom_sidebar ul li a {
+  text-decoration: none;
+  display: flex;
+  color: #fff;
+  align-items: center;
+  transition: all 0.4s ease;
+  border-radius: 12px;
+}
+
+.custom_sidebar ul li a:hover {
+  color: #11101d;
+  background: #fff;
+}
+.custom_sidebar ul li i {
+  height: 50px;
+  min-width: 50px;
+  border-radius: 12px;
+  line-height: 52px;
+  font-size: 18px;
+  text-align: center;
+}
+
+.custom_sidebar .sidebar_profile_content {
+  width: 100%;
+  position: absolute;
+  color: #fff;
+  bottom: 0;
+  left: 0;
+}
+
+
+.custom_sidebar .sidebar_profile_content .sidebar_profile {
+  position: relative;
+  padding: 10px 6px;
+  height: 60px;
+  background: #1d1b31;
+}
+
+.sidebar_profile_content .sidebar_profile .sidebar_profile_details {
+  display: flex;
+  align-items: center;
+}
+
+.sidebar_profile .sidebar_profile_details img {
+  height: 45px;
+  width: 45px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.sidebar_profile .sidebar_profile_details .sidebar_name_job {
+  margin-left: 10px;
+}
+
+.sidebar_profile .sidebar_profile_details .sidebar_name {
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.sidebar_profile .sidebar_profile_details .sidebar_job {
+  font-size: 12px;
+}
+
+.sidebar_profile #sidebar-log-out {
+  position: absolute;
+  left: 90%;
+  bottom: 5px;
+  transform: translateX(-50%);
+  min-width: 50px;
+  line-height: 50px;
+  font-size: 20px;
+  border-radius: 12px;
+  text-align: center;
+  cursor: pointer;
+}

@@ -1,0 +1,7 @@
+.layout_children_content {
+  position: absolute;
+  width: calc(100% - #{$sidebar-width}) !important;
+  left: $sidebar-width;
+  top: 6vh;
+  height: 100%;
+}

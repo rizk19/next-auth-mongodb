@@ -1,4 +1,7 @@
 import mongoose from "mongoose";
+import "../models/users";
+import "../models/company";
+import "../models/employee";
 
 export async function dbConnect() {
     if (mongoose.connection.readyState >= 1) return;
