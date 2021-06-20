@@ -1,5 +1,6 @@
 import React from "react";
 import { AppProps } from "next/app";
+import Head from "next/head";
 import "@styles/app.scss";
 import "@styles/global.scss";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -15,6 +16,12 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
             <Hydrate state={pageProps.dehydratedState}>
                 <AuthProvider session={pageProps.session}>
                     <ReduxProvider store={store}>
+                        <Head>
+                            <link
+                                rel="stylesheet"
+                                href="https://unpkg.com/boxicons@latest/css/boxicons.min.css"
+                            ></link>
+                        </Head>
                         <Component {...pageProps} />
                     </ReduxProvider>
                 </AuthProvider>

@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/client";
-import { Container } from "react-bootstrap";
+import { Container, Spinner } from "react-bootstrap";
 import { Header, Footer } from "../index";
 import { useSelector, useDispatch } from "react-redux";
 import { getUserRedux, selectUser } from "@redux/slices/userManagement";
 import axios from "axios";
-import { Toast, CreateCompanyModal, HeaderMain, Sidebar } from "@components";
+import { Toast, CreateCompanyModal, Sidebar } from "@components";
 // import { useMutation } from "react-query";
 import URL from "@config";
 
@@ -55,6 +55,7 @@ export const Layout = ({ children }) => {
                             });
                             inputCompanyNameRef.current.value = "";
                             setHasCompany(false);
+                            window.location.reload();
                         }
                     })
                     .catch((err) => {
@@ -89,7 +90,7 @@ export const Layout = ({ children }) => {
 
         if (
             session?.user?.company &&
-            session.user.company.length === 0 &&
+            session.user?.company.length === 0 &&
             Object.keys(userVuex).length !== 0 &&
             userVuex?.company?.length === 0
         ) {
@@ -108,7 +109,8 @@ export const Layout = ({ children }) => {
             }
         } else if (
             session?.user &&
-            session.user.company.length === 0 &&
+            session.user?.company &&
+            session.user.company?.length === 0 &&
             Object.keys(userVuex).length !== 0 &&
             userVuex?.company?.length === 0
         ) {
@@ -120,16 +122,20 @@ export const Layout = ({ children }) => {
 
     return (
         <Container fluid className="px-0 d-flex flex-column min-vh-100">
-            {userVuexValid && (
+            {!userVuexValid && !session && (
                 <>
                     <Header />
                     {children}
                     <Footer />
                 </>
             )}
-            {!userVuexValid && (
+            {!userVuexValid && session && (
                 <>
-                    <HeaderMain />
+                    <Spinner animation="grow" variant="dark" />
+                </>
+            )}
+            {userVuexValid && (
+                <>
                     <Sidebar />
                     <div className="layout_children_content">{children}</div>
                 </>

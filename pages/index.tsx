@@ -6,12 +6,6 @@ import { Main, Cards, Layout } from "@components";
 const Home: React.FC = () => {
     return (
         <>
-            <Head>
-                <link
-                    rel="stylesheet"
-                    href="https://unpkg.com/boxicons@latest/css/boxicons.min.css"
-                ></link>
-            </Head>
             <Layout>
                 <Main />
                 <Cards />

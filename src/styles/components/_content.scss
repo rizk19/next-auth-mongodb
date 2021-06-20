@@ -1,7 +1,14 @@
 .layout_children_content {
   position: absolute;
+  width: calc(100% - #{$sidebar-mini-width}) !important;
+  left: $sidebar-mini-width;
+  height: 100%;
+  transition: all 0.5s ease;
+}
+
+.layout_children_content.active {
+  position: absolute;
   width: calc(100% - #{$sidebar-width}) !important;
   left: $sidebar-width;
-  top: 6vh;
   height: 100%;
 }
