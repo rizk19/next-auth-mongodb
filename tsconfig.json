@@ -25,6 +25,8 @@
             "@public": ["public"],
             "@redux/*": ["src/redux/*"],
             "@redux": ["src/redux"],
+            "@helper/*": ["src/helper/*"],
+            "@helper": ["src/helper"],
             "@test/*": ["test/*"],
             "@test": ["test"]
         }

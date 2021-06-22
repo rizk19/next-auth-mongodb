@@ -1,10 +1,22 @@
 import React, { useState, useEffect } from "react";
 import XLSX from "xlsx";
 import { useTable, useBlockLayout, useResizeColumns } from "react-table";
+import BTable from "react-bootstrap/Table";
+import {
+    SortableContainer,
+    SortableElement,
+    SortableHandle,
+} from "react-sortable-hoc";
+import arrayMove from "@helper/arrayMove";
 
 const Attendance = () => {
     const [data, setData] = useState([]);
     const [cols, setCols] = useState([]);
+    const [defaultColumn, setDefaultColumn] = useState({
+        minWidth: 100,
+        width: 180,
+        maxWidth: 400,
+    });
 
     const handleFile = (file /*:File*/) => {
         /* Boilerplate to set up FileReader */
@@ -45,6 +57,8 @@ const Attendance = () => {
         const accessorHeader = [];
         firstArray.forEach((element, i) => {
             let tempAccessor = element.replace(/\s/g, "");
+            tempAccessor = tempAccessor.split(".").join("");
+            console.log("tempAccessor", tempAccessor);
             headerTable.push({
                 Header: element,
                 accessor: tempAccessor,
@@ -53,15 +67,6 @@ const Attendance = () => {
         });
         setCols(headerTable);
         return accessorHeader;
-    };
-
-    const make_cols = (refstr) => {
-        let o = [],
-            C = XLSX.utils.decode_range(refstr).e.c + 1;
-        for (var i = 0; i < C; ++i)
-            console.log("XLSX.utils.encode_col(i)", XLSX.utils.encode_col(i));
-        o[i] = { name: XLSX.utils.encode_col(i), key: i };
-        return o;
     };
 
     useEffect(() => {
@@ -74,6 +79,22 @@ const Attendance = () => {
         if (files && files[0]) handleFile(files[0]);
     };
 
+    const onSortEnd = React.useCallback(({ oldIndex, newIndex }) => {
+        setData((oldItems) => arrayMove(oldItems, oldIndex, newIndex));
+    }, []);
+
+    const onSortEndHead = React.useCallback(({ oldIndex, newIndex }) => {
+        setCols((oldItems) => arrayMove(oldItems, oldIndex, newIndex));
+    }, []);
+    console.log(Object.entries(defaultColumn));
+    console.log(defaultColumn);
+
+    const onChangeDefCols = (e) => {
+        setDefaultColumn((prevState) => ({
+            ...prevState,
+            [e.target.name]: Number(e.target.value),
+        }));
+    };
     return (
         <>
             <form className="form-inline">
@@ -86,8 +107,160 @@ const Attendance = () => {
                         accept={".xlsx,.xls"}
                         onChange={handleChange}
                     />
+                    {Object.entries(defaultColumn).map((item, i) => (
+                        <input
+                            key={`${item[0] + i}`}
+                            type="number"
+                            name={item[0]}
+                            value={item[1]}
+                            onChange={(e) => onChangeDefCols(e)}
+                            className="form-control"
+                        />
+                    ))}
                 </div>
+                {data.length > 0 && cols.length > 0 && (
+                    <Table
+                        data={data}
+                        columns={cols}
+                        onSortEnd={onSortEnd}
+                        onSortEndHead={onSortEndHead}
+                        defaultColumn={defaultColumn}
+                    />
+                )}
             </form>
+        </>
+    );
+};
+
+const Table = (props) => {
+    const { data, columns, defaultColumn, onSortEnd, onSortEndHead } = props;
+
+    var {
+        getTableProps,
+        getTableBodyProps,
+        headerGroups,
+        rows,
+        prepareRow,
+        state,
+        resetResizing,
+    } = useTable(
+        {
+            columns,
+            data,
+            defaultColumn,
+        },
+        useBlockLayout,
+        useResizeColumns,
+    );
+
+    const SortableContBody = SortableContainer(({ children }) => {
+        return <tbody {...getTableBodyProps()}>{children}</tbody>;
+    });
+    const SortableItem = SortableElement((props) => {
+        return (
+            <tr key={props.key} {...props.row.getRowProps()} className="tr">
+                <RowHandler />
+                {props.row.cells.map((cell) => {
+                    return (
+                        <td {...cell.getCellProps()} className="td">
+                            {cell.render("Cell")}
+                        </td>
+                    );
+                })}
+            </tr>
+        );
+    });
+
+    const SortableContHead = SortableContainer(({ children }) => {
+        return <thead>{children}</thead>;
+    });
+    const SortableHeader = SortableElement((props) => {
+        return (
+            <th {...props.column.getHeaderProps()} className="th">
+                {props.column.render("Header")}
+                <HeadHandler />
+                {/* Use column.getResizerProps to hook up the events correctly */}
+                <div
+                    {...props.column.getResizerProps()}
+                    className={`resizer ${
+                        props.column.isResizing ? "isResizing" : ""
+                    }`}
+                />
+            </th>
+        );
+    });
+
+    const RowHandler = SortableHandle(() => (
+        <td className="handle cursor-move">
+            <i className="bx bxs-sort-alt"></i>
+        </td>
+    ));
+
+    const HeadHandler = SortableHandle(() => (
+        <div>
+            <i className="bx bx-move-horizontal cursor-move"></i>
+        </div>
+    ));
+
+    return (
+        <>
+            <div>
+                <BTable
+                    striped
+                    bordered
+                    hover
+                    size="sm"
+                    variant="dark"
+                    {...getTableProps()}
+                >
+                    <SortableContHead
+                        onSortEnd={onSortEndHead}
+                        axis="x"
+                        lockAxis="x"
+                        lockToContainerEdges={true}
+                        lockOffset={["30%", "50%"]}
+                        useDragHandle={true}
+                    >
+                        {headerGroups.map((headerGroup) => (
+                            <tr
+                                {...headerGroup.getHeaderGroupProps()}
+                                className="tr"
+                            >
+                                <th>
+                                    <i className="bx bx-sort-alt-2"></i>
+                                </th>
+                                {headerGroup.headers.map((column, i) => (
+                                    <SortableHeader
+                                        column={column}
+                                        key={`head-${i}`}
+                                        index={i}
+                                    />
+                                ))}
+                            </tr>
+                        ))}
+                    </SortableContHead>
+
+                    <SortableContBody
+                        onSortEnd={onSortEnd}
+                        axis="y"
+                        lockAxis="y"
+                        lockToContainerEdges={true}
+                        lockOffset={["30%", "50%"]}
+                        useDragHandle={true}
+                    >
+                        {rows.map((row, i) => {
+                            prepareRow(row);
+                            return (
+                                <SortableItem
+                                    index={i}
+                                    key={`item-${i}`}
+                                    row={row}
+                                />
+                            );
+                        })}
+                    </SortableContBody>
+                </BTable>
+            </div>
         </>
     );
 };
